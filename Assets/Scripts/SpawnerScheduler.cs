@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnerController : MonoBehaviour
+public class SpawnerScheduler : MonoBehaviour
 {
     private Spawner[] _spawners;
+    private EnemyPool _enemyPool;
 
     private IEnumerator CreateEnemyRandomSpawner(Spawner[] spawners)
     {
@@ -14,14 +15,26 @@ public class SpawnerController : MonoBehaviour
         {
             int keyRandomSpawner = Random.Range(0, spawners.Length);
             Spawner currentSpawner = spawners[keyRandomSpawner];
+
             currentSpawner.CreateEnemy();
             yield return new WaitForSeconds(2F);
         }
     }
 
-    void Start()
+    private void Awake()
     {
-        _spawners = gameObject.GetComponentsInChildren<Spawner>();
+        _enemyPool = FindObjectOfType<EnemyPool>();
+    }
+
+    private void Start()
+    {
+        _spawners = GetComponentsInChildren<Spawner>();
+
+        foreach (var spawner in _spawners)
+        {
+            spawner.Init(_enemyPool);
+        }
+
         StartCoroutine(CreateEnemyRandomSpawner(_spawners));
     }
 }

@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     private void Update()
